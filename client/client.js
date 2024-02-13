@@ -1,5 +1,5 @@
 const nearestSection = document.querySelector('.nearest-section')
-
+const mapCentreLocationSection = document.querySelector('.map-centre-location-section')  
 
 let map;
 
@@ -11,6 +11,44 @@ async function initMap() {
         zoom: 13,
         minZoom: 9,
     });
+    const center = map.getCenter();
+    const lat = center.lat();
+    const lng = center.lng();
+
+    // TO DISCUSS WITH DT
+    // const url = `http://localhost:8080/?lat=${lat}&lng=${lng}`
+    // let data = {
+    //     lat: lat,
+    //     lng: lng
+    // } 
+    // fetch(url)
+    //     method: 'post',
+    //     headers: {
+    //         "Content-Type": "application/json"
+    //     },
+    //     body: JSON.stringify(data) // 
+    // })
+    //     .then(res => res.json())
+    //     .then(data => console.log(data))
+  
+    const latitudeElem = document.createElement('p')
+    const longitudeElem = document.createElement('p')
+    latitudeElem.textContent = lat
+    longitudeElem.textContent = lng
+    mapCentreLocationSection.appendChild(latitudeElem)
+    mapCentreLocationSection.appendChild(longitudeElem)
+
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyBnshLusOeJGaS1zRnSGDZzibrjBrt6bDc`
+
+    fetch(url)
+        .then(res => res.json())
+        .then(data => {
+            const currentAddress = data.results[0].formatted_address
+            const addressElem = document.createElement('h2')
+            addressElem.textContent = currentAddress
+            mapCentreLocationSection.appendChild(addressElem)
+        })
+
     return stationMarker();
 }
 
@@ -84,5 +122,6 @@ nearestStations()
 //         marker.setAnimation(google.maps.Animation.BOUNCE);
 //     }
 // }
+
 
 initMap();
