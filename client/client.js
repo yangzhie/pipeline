@@ -1,5 +1,6 @@
+
 const nearestSection = document.querySelector('.nearest-section')
-const mapCentreLocationSection = document.querySelector('.map-centre-location-section')  
+const mapCentreLocationSection = document.querySelector('.map-centre-location-section')
 
 let map;
 
@@ -14,6 +15,8 @@ async function initMap() {
     const center = map.getCenter();
     const lat = center.lat();
     const lng = center.lng();
+
+    getWeather(lat, lng);
 
     // TO DISCUSS WITH DT
     // const url = `http://localhost:8080/?lat=${lat}&lng=${lng}`
@@ -30,7 +33,7 @@ async function initMap() {
     // })
     //     .then(res => res.json())
     //     .then(data => console.log(data))
-  
+
     const latitudeElem = document.createElement('p')
     const longitudeElem = document.createElement('p')
     latitudeElem.textContent = lat
@@ -69,7 +72,7 @@ function stationMarker() {
                     map,
                     draggable: true,
                     animation: google.maps.Animation.DROP,
-                    title:`${name}\n${address}`
+                    title: `${name}\n${address}`
                 })
 
                 // DEAL WITH TOGGLEBOUNCE LATER
@@ -103,16 +106,51 @@ function nearestStations() {
                 let stationOwnerElem = document.createElement('p') // logo 
                 stationOwnerElem.textContent = stationOwner
 
-                
+
                 stationArticle.appendChild(stationOwnerElem)
                 stationArticle.appendChild(stationNameElem)
                 stationArticle.appendChild(stationAddressElem)
                 nearestSection.appendChild(stationArticle)
-                
-        }
-    })
+
+            }
+        })
 }
 nearestStations()
+
+function getWeather(lat, lng) {
+    const url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lng}&exclude=&units=metric&appid=347533d0e42725230e0bb151a7cb2eea`
+    fetch(url)
+        .then(openweatherRes => openweatherRes.json())
+        .then(result => {
+            const tempCelsius = result.current.temp.toFixed(2)
+
+            let currentWeatherSection = document.querySelector('.current-weather-section')
+            let currentWeatherElem = document.createElement('h2')
+
+            currentWeatherElem.textContent = tempCelsius
+
+            currentWeatherSection.appendChild(currentWeatherElem)
+
+            let localTime = result.current.dt
+
+            // let hours = new Date(localTime * 1000).getHours()
+            // let minutes = new Date(localTime * 1000).getMinutes()
+            // let seconds = new Date(localTime * 1000).getSeconds()
+
+            let date = new Date(localTime * 1000).getDate()
+            let month = new Date(localTime * 1000).getMonth() + 1
+            let year = new Date(localTime * 1000).getFullYear()
+
+            let currentDateElem = document.createElement('p')
+            currentDateElem.textContent = `${date}/${month}/${year}`
+
+            currentWeatherSection.appendChild(currentDateElem)
+
+        })
+}
+
+
+
 // DEAL WITH TOGGLEBOUNCE LATER
 
 // function toggleBounce() {
