@@ -67,6 +67,14 @@ function stationMarker() {
                 let name = stations[i].name
                 let address = stations[i].address
 
+                const contentString =
+                `<div id="content"><p><strong>${name}</strong></p><p>${address}</p></div>`
+
+                let infoWindow = new google.maps.InfoWindow({
+                    content: contentString,
+                    ariaLabel: name,
+                  });
+
                 const marker = new google.maps.Marker({
                     position: { lat: latitude, lng: longitude },
                     map,
@@ -77,10 +85,20 @@ function stationMarker() {
 
                 // DEAL WITH TOGGLEBOUNCE LATER
 
-                // marker.addListener("click", function () {
-                //     toggleBounce(marker)
-                // });
+                marker.addListener("click", () => {
+                    // toggleBounce(marker)
+                    infoWindow.open({
+                        anchor: marker,
+                        map,
+                      });
 
+                });
+
+                map.addListener('click', () => {
+                    if (infoWindow) infoWindow.close();
+                });
+
+                window.initMap = initMap;
             }
         })
 }
