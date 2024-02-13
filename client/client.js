@@ -1,6 +1,6 @@
-
 const nearestSection = document.querySelector('.nearest-section')
 const mapCentreLocationSection = document.querySelector('.map-centre-location-section')
+const currentTimeSection = document.querySelector('.current-time-section')
 
 const customMarkers = {
     SevenEleven: '/images/7-eleven-logo.png',
@@ -23,7 +23,7 @@ async function initMap() {
         zoom: 13,
         minZoom: 9,
     });
-    const center = map.getCenter();
+    let center = map.getCenter();
     const lat = center.lat();
     const lng = center.lng();
 
@@ -213,6 +213,7 @@ function getWeather(lat, lng) {
         })
 }
 
+<<<<<<< Updated upstream
 function assignCustomMarker (servo) {
     let markerUrl = ''
     if (servo.owner.includes('7-Eleven')) {
@@ -235,6 +236,8 @@ function assignCustomMarker (servo) {
 
 
 
+=======
+>>>>>>> Stashed changes
 // DEAL WITH TOGGLEBOUNCE LATER
 
 // function toggleBounce() {
@@ -245,6 +248,17 @@ function assignCustomMarker (servo) {
 //     }
 // }
 
+function showTime() {
+    currentTimeSection.innerHTML =''
+    let currentTime = moment().format("ddd hh:mm:ss a")
+    const showTimeElem = document.createElement('h2')
+    showTimeElem.textContent = currentTime
+    currentTimeSection.appendChild(showTimeElem)
+}
+
+setInterval(() => {
+    showTime()
+}, 1000);
 
 initMap();
 
