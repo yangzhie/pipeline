@@ -23,13 +23,15 @@ function stationMarker() {
             for (let i = 0; i < stations.length; i++) {
                 let latitude = stations[i].latitude;
                 let longitude = stations[i].longitude;
+                let name = stations[i].name
+                let address = stations[i].address
 
                 const marker = new google.maps.Marker({
                     position: { lat: latitude, lng: longitude },
                     map,
                     draggable: true,
                     animation: google.maps.Animation.DROP,
-                    title: "Hello World!",
+                    title:`${name}\n${address}`
                 })
 
                 // DEAL WITH TOGGLEBOUNCE LATER
