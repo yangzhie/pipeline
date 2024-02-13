@@ -1,3 +1,6 @@
+const nearestSection = document.querySelector('.nearest-section')
+
+
 let map;
 
 async function initMap() {
@@ -39,6 +42,37 @@ function stationMarker() {
         })
 }
 
+function nearestStations() {
+    const url = 'http://localhost:8080/api/stations/all'
+
+    fetch(url)
+        .then(res => res.json())
+        .then(stations => {
+            for (let i = 0; i < 10; i++) {
+                let stationName = stations[i].name
+                let stationAddress = stations[i].address
+                let stationOwner = stations[i].owner
+
+                let stationArticle = document.createElement('article')
+                let stationNameElem = document.createElement('p')
+                stationNameElem.textContent = stationName
+
+                let stationAddressElem = document.createElement('p')
+                stationAddressElem.textContent = stationAddress
+
+                let stationOwnerElem = document.createElement('p') // logo 
+                stationOwnerElem.textContent = stationOwner
+
+                
+                stationArticle.appendChild(stationOwnerElem)
+                stationArticle.appendChild(stationNameElem)
+                stationArticle.appendChild(stationAddressElem)
+                nearestSection.appendChild(stationArticle)
+                
+        }
+    })
+}
+nearestStations()
 // DEAL WITH TOGGLEBOUNCE LATER
 
 // function toggleBounce() {
