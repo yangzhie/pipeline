@@ -68,12 +68,12 @@ function stationMarker() {
                 let address = stations[i].address
 
                 const contentString =
-                `<div id="content"><p><strong>${name}</strong></p><p>${address}</p></div>`
+                    `<div id="content"><p><strong>${name}</strong></p><p>${address}</p></div>`
 
                 let infoWindow = new google.maps.InfoWindow({
                     content: contentString,
                     ariaLabel: name,
-                  });
+                });
 
                 const marker = new google.maps.Marker({
                     position: { lat: latitude, lng: longitude },
@@ -90,7 +90,7 @@ function stationMarker() {
                     infoWindow.open({
                         anchor: marker,
                         map,
-                      });
+                    });
 
                 });
 
@@ -181,3 +181,22 @@ function getWeather(lat, lng) {
 
 
 initMap();
+
+
+
+
+const randomStationButton = document.querySelector("#random-station-btn");
+
+randomStationButton.addEventListener("click", function () {
+    getRandomPetrolStation();
+});
+
+function getRandomPetrolStation() {
+    const url = 'http://localhost:8080/api/stations/random';
+
+    fetch(url)
+        .then(res => res.json())
+        .then(station => {
+            alert(`Random Petrol Station:\nName: ${station.name}\nAddress: ${station.address}`);
+        })
+}
