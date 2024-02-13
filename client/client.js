@@ -2,6 +2,17 @@
 const nearestSection = document.querySelector('.nearest-section')
 const mapCentreLocationSection = document.querySelector('.map-centre-location-section')
 
+const customMarkers = {
+    SevenEleven: '/images/7-eleven-logo.png',
+    BP: '/images/bp-logo.png',
+    Caltex: '/images/caltex-logo.png',
+    Shell: '/images/shell-logo.png',
+    United: '/images/united-logo.jpg',
+    Ampol: '/images/ampol-logo.png',
+    Other: '/images/generic-logo.png',
+}
+
+
 let map;
 
 async function initMap() {
@@ -33,6 +44,31 @@ async function initMap() {
     // })
     //     .then(res => res.json())
     //     .then(data => console.log(data))
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            };
+
+
+            const userMarker = new google.maps.Marker({
+                position: { lat: pos.lat, lng: pos.lng },
+                map,
+                draggable: true,
+                animation: google.maps.Animation.DROP,
+            })
+            map.setCenter(pos);
+          },
+          () => {
+            console.log('location access denied')
+          },
+        );
+      } else {
+        // Browser doesn't support Geolocation
+        handleLocationError(false, infoWindow, map.getCenter());
+      }
 
     const latitudeElem = document.createElement('p')
     const longitudeElem = document.createElement('p')
@@ -68,7 +104,15 @@ function stationMarker() {
                 let address = stations[i].address
 
                 const contentString =
+<<<<<<< Updated upstream
                     `<div id="content"><p><strong>${name}</strong></p><p>${address}</p></div>`
+=======
+                `<div id="content"><p><strong>${name}</strong></p><p>${address}</p></div>`
+                const icon = {
+                    url: assignCustomMarker(stations[i]),
+                    scaledSize: new google.maps.Size(30, 30)
+                }
+>>>>>>> Stashed changes
 
                 let infoWindow = new google.maps.InfoWindow({
                     content: contentString,
@@ -78,6 +122,7 @@ function stationMarker() {
                 const marker = new google.maps.Marker({
                     position: { lat: latitude, lng: longitude },
                     map,
+                    icon: icon,
                     draggable: true,
                     animation: google.maps.Animation.DROP,
                     title: `${name}\n${address}`
@@ -121,18 +166,19 @@ function nearestStations() {
                 let stationAddressElem = document.createElement('p')
                 stationAddressElem.textContent = stationAddress
 
-                let stationOwnerElem = document.createElement('p') // logo 
-                stationOwnerElem.textContent = stationOwner
+                let stationOwnerElem = document.createElement('img') // logo
+                stationOwnerElem.classList.add('marker')
+                stationOwnerElem.src = assignCustomMarker(stations[i])
 
 
                 stationArticle.appendChild(stationOwnerElem)
                 stationArticle.appendChild(stationNameElem)
                 stationArticle.appendChild(stationAddressElem)
                 nearestSection.appendChild(stationArticle)
-
             }
         })
 }
+
 nearestStations()
 
 function getWeather(lat, lng) {
@@ -165,6 +211,26 @@ function getWeather(lat, lng) {
             currentWeatherSection.appendChild(currentDateElem)
 
         })
+}
+
+function assignCustomMarker (servo) {
+    let markerUrl = ''
+    if (servo.owner.includes('7-Eleven')) {
+        markerUrl = customMarkers.SevenEleven
+    } else if (servo.owner.includes('BP')) {
+        markerUrl = customMarkers.BP
+    } else if (servo.owner.includes('Caltex')) {
+        markerUrl = customMarkers.Caltex
+    } else if (servo.owner.includes('Shell')) {
+        markerUrl = customMarkers.Shell
+    } else if (servo.owner.includes('United')) {
+        markerUrl = customMarkers.United
+    } else if (servo.owner.includes('Ampol')) {
+        markerUrl = customMarkers.Ampol
+    } else {
+        markerUrl = customMarkers.Other
+    }
+    return markerUrl
 }
 
 
