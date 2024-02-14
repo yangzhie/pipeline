@@ -33,7 +33,8 @@ main {
     width: 100%;
 }
 
-.marker {
+.marker,
+img {
     width: 40px;
 }
 
