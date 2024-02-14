@@ -320,3 +320,29 @@ function getStats() {
 }
 
 getStats()
+let sidebarsVisible = true 
+
+document.addEventListener('keydown', function(event){
+    console.log(event.key);
+    if (event.ctrlKey && event.shiftKey && event.key.toUpperCase() === 'B')
+    toggleSidebars()
+})
+
+function toggleSidebars() {
+    const wrapper = document.querySelector('.wrapper')
+
+    wrapper.classList.toggle('hide-sidebars', !sidebarsVisible)
+
+    if (!sidebarsVisible) {
+        wrapper.classList.remove('wrapper');
+    } else {
+        const newWrapper = document.createElement('div');
+        newWrapper.classList.add('wrapper');
+        document.body.appendChild(newWrapper);
+
+    }
+    sidebarsVisible = !sidebarsVisible;
+    
+}
+
+toggleSidebars()
