@@ -15,19 +15,34 @@ const customMarkers = {
 
 let map;
 
-async function initMap() {
+getUserLocation()
+
+async function initMap(coordinates) {
     const { Map, Marker } = await google.maps.importLibrary("maps")
 
     map = new Map(document.getElementById("map"), {
-        center: { lat: -37.827084195990295, lng: 144.95917320577624 },
+        center: { lat: coordinates.lat, lng: coordinates.lng}, 
         zoom: 13,
         minZoom: 9,
     });
     let center = map.getCenter();
-    const lat = center.lat();
-    const lng = center.lng();
+    let lat = center.lat();
+    let lng = center.lng();
 
     getWeather(lat, lng);
+
+    const userIcon = {
+        url: '/images/person.png',
+        scaledSize: new google.maps.Size(40, 40)
+    }
+
+    const userMarker = new google.maps.Marker({
+        position: { lat: lat, lng: lng },
+        map,
+        icon: userIcon,
+        draggable: true,
+        animation: google.maps.Animation.DROP,
+    })
 
     // TO DISCUSS WITH DT
     // const url = `http://localhost:8080/?lat=${lat}&lng=${lng}`
@@ -44,31 +59,6 @@ async function initMap() {
     // })
     //     .then(res => res.json())
     //     .then(data => console.log(data))
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const pos = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            };
-
-
-            const userMarker = new google.maps.Marker({
-                position: { lat: pos.lat, lng: pos.lng },
-                map,
-                draggable: true,
-                animation: google.maps.Animation.DROP,
-            })
-            map.setCenter(pos);
-          },
-          () => {
-            console.log('location access denied')
-          },
-        );
-      } else {
-        // Browser doesn't support Geolocation
-        handleLocationError(false, infoWindow, map.getCenter());
-      }
 
     const latitudeElem = document.createElement('p')
     const longitudeElem = document.createElement('p')
@@ -255,9 +245,6 @@ setInterval(() => {
 
 initMap();
 
-
-
-
 const randomStationButton = document.querySelector("#random-station-btn");
 
 randomStationButton.addEventListener("click", function () {
@@ -272,4 +259,26 @@ function getRandomPetrolStation() {
         .then(station => {
             alert(`Random Petrol Station:\nName: ${station.name}\nAddress: ${station.address}`);
         })
+}
+
+
+function getUserLocation() {
+    if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+        
+        const pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+        };
+        initMap(pos)
+        },
+        () => {
+        console.log('location access denied')
+        },
+    )
+    } else {
+    // Browser doesn't support Geolocation
+    handleLocationError(false, infoWindow, map.getCenter());
+    }
 }
