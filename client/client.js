@@ -23,7 +23,7 @@ async function initMap(coordinates) {
     const { Map, Marker } = await google.maps.importLibrary("maps")
 
     map = new Map(document.getElementById("map"), {
-        center: { lat: coordinates.lat, lng: coordinates.lng}, 
+        center: { lat: coordinates.lat, lng: coordinates.lng },
         zoom: 13,
         minZoom: 9,
     });
@@ -96,7 +96,7 @@ function stationMarker() {
                 let address = stations[i].address
 
                 const contentString =
-                `<div id="content"><p><strong>${name}</strong></p><p>${address}</p></div>`
+                    `<div id="content"><p><strong>${name}</strong></p><p>${address}</p></div>`
                 const icon = {
                     url: assignCustomMarker(stations[i]),
                     scaledSize: new google.maps.Size(30, 30)
@@ -201,7 +201,7 @@ function getWeather(lat, lng) {
         })
 }
 
-function assignCustomMarker (servo) {
+function assignCustomMarker(servo) {
     let markerUrl = ''
     if (servo.owner.includes('7-Eleven')) {
         markerUrl = customMarkers.SevenEleven
@@ -234,7 +234,7 @@ function assignCustomMarker (servo) {
 // }
 
 function showTime() {
-    currentTimeSection.innerHTML =''
+    currentTimeSection.innerHTML = ''
     let currentTime = moment().format("ddd hh:mm:ss a")
     const showTimeElem = document.createElement('h2')
     showTimeElem.textContent = currentTime
@@ -245,7 +245,7 @@ setInterval(() => {
     showTime()
 }, 1000);
 
-initMap();
+// initMap();
 
 const randomStationButton = document.querySelector("#random-station-btn");
 
@@ -259,31 +259,47 @@ function getRandomPetrolStation() {
     fetch(url)
         .then(res => res.json())
         .then(station => {
-            alert(`Random Petrol Station:\nName: ${station.name}\nAddress: ${station.address}`);
+            const spotlightSection = document.querySelector('.spotlight-section')
+
+            const nameElem = document.createElement('h3')
+            const addressElem = document.createElement('p')
+
+            nameElem.textContent = station.name
+            addressElem.textContent = station.address
+
+            spotlightSection.appendChild(nameElem)
+            spotlightSection.appendChild(addressElem)
+
+            const imageElem = document.createElement('img')
+            imageElem.src = assignCustomMarker(station)
+
+            spotlightSection.appendChild(imageElem)
         })
 }
 
+getRandomPetrolStation();
 
 function getUserLocation() {
     if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-        (position) => {
-        
-        const pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-        };
-        initMap(pos)
-        },
-        () => {
-        console.log('location access denied')
-        },
-    )
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+
+                const pos = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                };
+                initMap(pos)
+            },
+            () => {
+                console.log('location access denied')
+            },
+        )
     } else {
-    // Browser doesn't support Geolocation
-    handleLocationError(false, infoWindow, map.getCenter());
+        // Browser doesn't support Geolocation
+        handleLocationError(false, infoWindow, map.getCenter());
     }
 }
+
 const url = `http://localhost:8080/api/stats`
 
 function getStats() {
@@ -293,9 +309,9 @@ function getStats() {
             let arrOfOwners = data.owners
             let totalOwners = data.totalOwners.total_owners
             let totalStations = data.totalStations.total_stations
-            console.log(arrOfOwners)
-            console.log(totalOwners)
-            console.log(totalStations)
+            // console.log(arrOfOwners)
+            // console.log(totalOwners)
+            // console.log(totalStations)
             const totalOwnersElem = document.createElement('h3')
             const totalStationsElem = document.createElement('h3')
             totalOwnersElem.textContent = `total owners: ${totalOwners}`
@@ -315,17 +331,17 @@ function getStats() {
                 statsInfoTableElem.appendChild(tablerowElem)
             }
             statsSection.appendChild(statsInfoTableElem)
-            
+
         })
 }
 
 getStats()
-let sidebarsVisible = true 
+let sidebarsVisible = true
 
-document.addEventListener('keydown', function(event){
+document.addEventListener('keydown', function (event) {
     console.log(event.key);
     if (event.ctrlKey && event.shiftKey && event.key.toUpperCase() === 'B')
-    toggleSidebars()
+        toggleSidebars()
 })
 
 function toggleSidebars() {
@@ -342,7 +358,7 @@ function toggleSidebars() {
 
     }
     sidebarsVisible = !sidebarsVisible;
-    
+
 }
 
 toggleSidebars()
