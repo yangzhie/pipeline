@@ -8,6 +8,7 @@ const port = 8080
 const homeRouter = require('./routes/home_router')
 const ownersRouter = require('./routes/owners_router')
 const stationsRouter = require('./routes/stations_router')
+const statsRouter = require('./routes/stats_router')
 
 // converting to JS from JSON
 app.use(express.json())
@@ -20,6 +21,7 @@ app.set('view engine', 'ejs')
 app.use(homeRouter)
 app.use(ownersRouter)
 app.use(stationsRouter)
+app.use(statsRouter)
 
 // listening port
 app.listen(port, () => {
