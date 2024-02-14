@@ -2,6 +2,9 @@ const nearestSection = document.querySelector('.nearest-section')
 const mapCentreLocationSection = document.querySelector('.map-centre-location-section')
 const currentTimeSection = document.querySelector('.current-time-section')
 const statsSection = document.querySelector('.stats-section')
+const spotlightSection = document.querySelector('.spotlight-section')
+
+
 
 
 const customMarkers = {
@@ -247,19 +250,23 @@ setInterval(() => {
 
 // initMap();
 
-const randomStationButton = document.querySelector("#random-station-btn");
-
-randomStationButton.addEventListener("click", function () {
-    getRandomPetrolStation();
-});
+const randomStationButton = document.querySelector(".random-station-btn")
+const randomStationInfo = document.querySelector(".random-station-info")
+randomStationButton.addEventListener("click", getRandomPetrolStation)
 
 function getRandomPetrolStation() {
-    const url = 'http://localhost:8080/api/stations/random';
+    const url = 'http://localhost:8080/api/stations/random'
+    randomStationInfo.innerHTML = ''
 
     fetch(url)
         .then(res => res.json())
         .then(station => {
-            const spotlightSection = document.querySelector('.spotlight-section')
+
+            // const refreshBtnElem = document.createElement('button')
+            // refreshBtnElem.classList.add('random-station-btn')
+            // refreshBtnElem.textContent = 'Refresh'
+
+            // spotlightSection.appendChild(refreshBtnElem)
 
             const nameElem = document.createElement('h3')
             const addressElem = document.createElement('p')
@@ -267,17 +274,19 @@ function getRandomPetrolStation() {
             nameElem.textContent = station.name
             addressElem.textContent = station.address
 
-            spotlightSection.appendChild(nameElem)
-            spotlightSection.appendChild(addressElem)
+            randomStationInfo.appendChild(nameElem)
+            randomStationInfo.appendChild(addressElem)
 
             const imageElem = document.createElement('img')
             imageElem.src = assignCustomMarker(station)
 
-            spotlightSection.appendChild(imageElem)
+            randomStationInfo.appendChild(imageElem)
         })
 }
 
 getRandomPetrolStation();
+
+
 
 function getUserLocation() {
     if (navigator.geolocation) {
