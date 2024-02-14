@@ -7,6 +7,7 @@ const spotlightSection = document.querySelector('.spotlight-section')
 
 
 
+
 const customMarkers = {
     SevenEleven: '/images/7-eleven-logo.png',
     BP: '/images/bp-logo.png',
@@ -30,11 +31,16 @@ async function initMap(coordinates) {
         zoom: 13,
         minZoom: 9,
     });
+
+    map.addListener("bounds_changed", handleMapBounds)
+
     let center = map.getCenter();
     let lat = center.lat();
     let lng = center.lng();
 
     getWeather(lat, lng);
+    console.log({lat}, {lng});
+
 
     const userIcon = {
         url: '/images/person.png',
@@ -48,6 +54,7 @@ async function initMap(coordinates) {
         draggable: true,
         animation: google.maps.Animation.DROP,
     })
+
 
     // TO DISCUSS WITH DT
     // const url = `http://localhost:8080/?lat=${lat}&lng=${lng}`
@@ -82,95 +89,8 @@ async function initMap(coordinates) {
             addressElem.textContent = currentAddress
             mapCentreLocationSection.appendChild(addressElem)
         })
-
-    return stationMarker();
+    findNearestStations(lat, lng, 5000)
 }
-
-function stationMarker() {
-    const url = 'http://localhost:8080/api/stations/all'
-
-    fetch(url)
-        .then(res => res.json())
-        .then(stations => {
-            for (let i = 0; i < stations.length; i++) {
-                let latitude = stations[i].latitude;
-                let longitude = stations[i].longitude;
-                let name = stations[i].name
-                let address = stations[i].address
-
-                const contentString =
-                    `<div id="content"><p><strong>${name}</strong></p><p>${address}</p></div>`
-                const icon = {
-                    url: assignCustomMarker(stations[i]),
-                    scaledSize: new google.maps.Size(30, 30)
-                }
-
-                let infoWindow = new google.maps.InfoWindow({
-                    content: contentString,
-                    ariaLabel: name,
-                });
-
-                const marker = new google.maps.Marker({
-                    position: { lat: latitude, lng: longitude },
-                    map,
-                    icon: icon,
-                    draggable: true,
-                    animation: google.maps.Animation.DROP,
-                    title: `${name}\n${address}`
-                })
-
-                // DEAL WITH TOGGLEBOUNCE LATER
-
-                marker.addListener("click", () => {
-                    // toggleBounce(marker)
-                    infoWindow.open({
-                        anchor: marker,
-                        map,
-                    });
-
-                });
-
-                map.addListener('click', () => {
-                    if (infoWindow) infoWindow.close();
-                });
-
-                window.initMap = initMap;
-            }
-        })
-}
-
-function nearestStations() {
-    const url = 'http://localhost:8080/api/stations/all'
-
-    fetch(url)
-        .then(res => res.json())
-        .then(stations => {
-            for (let i = 0; i < 10; i++) {
-                let stationName = stations[i].name
-                let stationAddress = stations[i].address
-                let stationOwner = stations[i].owner
-
-                let stationArticle = document.createElement('article')
-                let stationNameElem = document.createElement('p')
-                stationNameElem.textContent = stationName
-
-                let stationAddressElem = document.createElement('p')
-                stationAddressElem.textContent = stationAddress
-
-                let stationOwnerElem = document.createElement('img') // logo
-                stationOwnerElem.classList.add('marker')
-                stationOwnerElem.src = assignCustomMarker(stations[i])
-
-
-                stationArticle.appendChild(stationOwnerElem)
-                stationArticle.appendChild(stationNameElem)
-                stationArticle.appendChild(stationAddressElem)
-                nearestSection.appendChild(stationArticle)
-            }
-        })
-}
-
-nearestStations()
 
 function getWeather(lat, lng) {
     const url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lng}&exclude=&units=metric&appid=347533d0e42725230e0bb151a7cb2eea`
@@ -178,7 +98,6 @@ function getWeather(lat, lng) {
         .then(openweatherRes => openweatherRes.json())
         .then(result => {
             const tempCelsius = result.current.temp.toFixed(2)
-
             let currentWeatherSection = document.querySelector('.current-weather-section')
             let currentWeatherElem = document.createElement('h2')
 
@@ -262,12 +181,6 @@ function getRandomPetrolStation() {
         .then(res => res.json())
         .then(station => {
 
-            // const refreshBtnElem = document.createElement('button')
-            // refreshBtnElem.classList.add('random-station-btn')
-            // refreshBtnElem.textContent = 'Refresh'
-
-            // spotlightSection.appendChild(refreshBtnElem)
-
             const nameElem = document.createElement('h3')
             const addressElem = document.createElement('p')
 
@@ -285,8 +198,6 @@ function getRandomPetrolStation() {
 }
 
 getRandomPetrolStation();
-
-
 
 function getUserLocation() {
     if (navigator.geolocation) {
@@ -318,9 +229,6 @@ function getStats() {
             let arrOfOwners = data.owners
             let totalOwners = data.totalOwners.total_owners
             let totalStations = data.totalStations.total_stations
-            // console.log(arrOfOwners)
-            // console.log(totalOwners)
-            // console.log(totalStations)
             const totalOwnersElem = document.createElement('h3')
             const totalStationsElem = document.createElement('h3')
             totalOwnersElem.textContent = `total owners: ${totalOwners}`
@@ -368,3 +276,110 @@ function toggleSidebars() {
 
 }
 
+
+function handleMapBounds() {
+    let bounds = map.getBounds()
+    console.log(bounds);
+    let boundsCoordinates = {
+        maxLat: bounds.getNorthEast().lat(),
+        maxLng: bounds.getNorthEast().lng(),
+        minLat: bounds.getSouthWest().lat(),
+        minLng: bounds.getSouthWest().lng()
+    }
+    // return boundsCoordinates
+    getInBoundStations(boundsCoordinates)
+}
+
+function toQueryString(obj) {
+    let paramsArr = Object.entries(obj)
+    .map(params => params.join('='))
+    
+    return `?${paramsArr.join('&')}`
+}
+
+function getInBoundStations(coordinates) {
+    const queryStr = toQueryString(coordinates)
+    const stationsUrl = `http://localhost:8080/api/stations/bounds/${queryStr}`
+    fetch(stationsUrl)
+        .then(res => res.json())
+        .then(stations => {
+            for (let i = 0; i < stations.length; i++) {
+                let latitude = stations[i].latitude;
+                let longitude = stations[i].longitude;
+                let name = stations[i].name
+                let address = stations[i].address
+
+                const contentString =
+                    `<div id="content"><p><strong>${name}</strong></p><p>${address}</p></div>`
+                const icon = {
+                    url: assignCustomMarker(stations[i]),
+                    scaledSize: new google.maps.Size(30, 30)
+                }
+
+                let infoWindow = new google.maps.InfoWindow({
+                    content: contentString,
+                    ariaLabel: name,
+                });
+
+                const marker = new google.maps.Marker({
+                    position: { lat: latitude, lng: longitude },
+                    map,
+                    icon: icon,
+                    draggable: false,
+                    // animation: google.maps.Animation.DROP,
+                    title: `${name}\n${address}`
+                })
+
+                // DEAL WITH TOGGLEBOUNCE LATER
+
+                marker.addListener("click", () => {
+                    // toggleBounce(marker)
+                    infoWindow.open({
+                        anchor: marker,
+                        map,
+                    });
+
+                });
+
+                map.addListener('click', () => {
+                    if (infoWindow) infoWindow.close();
+                });
+
+                window.initMap = initMap;
+            }
+        })  
+}
+
+function findNearestStations(lat, lng, radius) {
+
+    const queryStr = `http://localhost:8080/api/stations/nearest/?lat=${lat}&lng=${lng}&radius=${radius}`
+
+    fetch(queryStr)
+        .then(res => res.json())
+        .then(stations => {
+            for (let i = 0; i < 10; i++) {
+                let stationName = stations[i].name
+                let stationAddress = stations[i].address
+                let stationOwner = stations[i].owner
+
+                let stationArticle = document.createElement('article')
+                let descriptionElem = document.createElement('div')
+                let stationNameElem = document.createElement('p')
+                stationNameElem.textContent = stationName
+
+                let stationAddressElem = document.createElement('p')
+                stationAddressElem.textContent = stationAddress
+
+                let stationOwnerElem = document.createElement('img') // logo
+                stationOwnerElem.classList.add('marker')
+                stationOwnerElem.src = assignCustomMarker(stations[i])
+
+
+                stationArticle.appendChild(stationOwnerElem)
+                descriptionElem.appendChild(stationNameElem)
+                descriptionElem.appendChild(stationAddressElem)
+                stationArticle.appendChild(descriptionElem)
+                nearestSection.appendChild(stationArticle)
+            }
+        })
+}
