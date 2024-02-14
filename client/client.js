@@ -359,15 +359,12 @@ function toggleSidebars() {
     wrapper.classList.toggle('hide-sidebars', !sidebarsVisible)
 
     if (!sidebarsVisible) {
-        wrapper.classList.remove('wrapper');
+        wrapper.classList.add('wrapper-full');
     } else {
-        const newWrapper = document.createElement('div');
-        newWrapper.classList.add('wrapper');
-        document.body.appendChild(newWrapper);
+        wrapper.classList.remove('wrapper-full');
 
     }
     sidebarsVisible = !sidebarsVisible;
 
 }
 
-toggleSidebars()
