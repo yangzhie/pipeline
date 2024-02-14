@@ -5,6 +5,12 @@
     box-sizing: border-box;
 }
 
+html, body {
+    height: 100%;
+    overflow: hidden; /* Prevent scrolling */
+}
+
+
 .wrapper {
     display: grid;
     grid-template-columns: 1fr 3fr 1fr;
@@ -14,13 +20,18 @@
     grid-template-columns: 1fr;
 }
 
-.aside-left section {
-    height: 300px;
+.spotlight-section {
+    height: 10rem;
+}
+
+
+/* .aside-left section { */
+    /* height: 300px;
 }
 
 .aside-right section {
     height: 200px;
-}
+} */
 
 .hide-sidebars .aside-left,
 .hide-sidebars .aside-right {
@@ -39,14 +50,4 @@ main {
 .marker,
 img {
     width: 40px;
-}
-
-/* 
-   * Optional: Makes the sample page fill the window. 
-   */
-html,
-body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
 }
