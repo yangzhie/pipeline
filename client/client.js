@@ -1,6 +1,8 @@
 const nearestSection = document.querySelector('.nearest-section')
 const mapCentreLocationSection = document.querySelector('.map-centre-location-section')
 const currentTimeSection = document.querySelector('.current-time-section')
+const statsSection = document.querySelector('.stats-section')
+
 
 const customMarkers = {
     SevenEleven: '/images/7-eleven-logo.png',
@@ -282,3 +284,39 @@ function getUserLocation() {
     handleLocationError(false, infoWindow, map.getCenter());
     }
 }
+const url = `http://localhost:8080/api/stats`
+
+function getStats() {
+    fetch(url)
+        .then(res => res.json())
+        .then(data => {
+            let arrOfOwners = data.owners
+            let totalOwners = data.totalOwners.total_owners
+            let totalStations = data.totalStations.total_stations
+            console.log(arrOfOwners)
+            console.log(totalOwners)
+            console.log(totalStations)
+            const totalOwnersElem = document.createElement('h3')
+            const totalStationsElem = document.createElement('h3')
+            totalOwnersElem.textContent = `total owners: ${totalOwners}`
+            totalStationsElem.textContent = `total stations: ${totalStations}`
+            statsSection.appendChild(totalOwnersElem)
+            statsSection.appendChild(totalStationsElem)
+            const statsInfoTableElem = document.createElement('table')
+            statsInfoTableElem.classList.add('stats-info-table')
+            for (let i = 0; i < arrOfOwners.length; i++) {
+                const tablerowElem = document.createElement('tr')
+                const tabledata1Elem = document.createElement('td')
+                const tabledata2Elem = document.createElement('td')
+                tabledata1Elem.textContent = arrOfOwners[i].owner
+                tabledata2Elem.textContent = arrOfOwners[i].total
+                tablerowElem.appendChild(tabledata1Elem)
+                tablerowElem.appendChild(tabledata2Elem)
+                statsInfoTableElem.appendChild(tablerowElem)
+            }
+            statsSection.appendChild(statsInfoTableElem)
+            
+        })
+}
+
+getStats()
