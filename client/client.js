@@ -104,15 +104,11 @@ function stationMarker() {
                 let address = stations[i].address
 
                 const contentString =
-<<<<<<< Updated upstream
-                    `<div id="content"><p><strong>${name}</strong></p><p>${address}</p></div>`
-=======
                 `<div id="content"><p><strong>${name}</strong></p><p>${address}</p></div>`
                 const icon = {
                     url: assignCustomMarker(stations[i]),
                     scaledSize: new google.maps.Size(30, 30)
                 }
->>>>>>> Stashed changes
 
                 let infoWindow = new google.maps.InfoWindow({
                     content: contentString,
@@ -213,7 +209,6 @@ function getWeather(lat, lng) {
         })
 }
 
-<<<<<<< Updated upstream
 function assignCustomMarker (servo) {
     let markerUrl = ''
     if (servo.owner.includes('7-Eleven')) {
@@ -236,8 +231,6 @@ function assignCustomMarker (servo) {
 
 
 
-=======
->>>>>>> Stashed changes
 // DEAL WITH TOGGLEBOUNCE LATER
 
 // function toggleBounce() {
