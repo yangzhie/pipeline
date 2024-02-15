@@ -51,3 +51,19 @@ main {
 img {
     width: 40px;
 }
+
+.github-links {
+    display: block;
+}
+
+.spotlight-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.random-station-btn {
+    border: none;
+    background-color: transparent;
+    color: #551A8B;
+    text-decoration: underline;
+}
