@@ -234,19 +234,22 @@ function getRandomPetrolStation() {
         .then(res => res.json())
         .then(station => {
 
+            const randomServoElem = document.createElement('div')
+            randomServoElem.classList.add('random-servo-div')
             const nameElem = document.createElement('h3')
             const addressElem = document.createElement('p')
 
             nameElem.textContent = station.name
             addressElem.textContent = station.address
 
-            randomStationInfo.appendChild(nameElem)
-            randomStationInfo.appendChild(addressElem)
-
             const imageElem = document.createElement('img')
             imageElem.src = assignCustomMarker(station)
 
+            randomServoElem.appendChild(nameElem)
+            randomServoElem.appendChild(addressElem)
             randomStationInfo.appendChild(imageElem)
+            randomStationInfo.appendChild(randomServoElem)
+
         })
 }
 getRandomPetrolStation()

@@ -49,7 +49,7 @@ body.dark-mode {
     color: rgb(235, 235, 235);
     font-weight: 500;
     font-size: 1.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .dark-mode h3 {
@@ -86,10 +86,6 @@ section {
 
 .wrapper-full {
     grid-template-columns: 1fr;
-}
-
-.spotlight-section {
-    height: 10rem;
 }
 
 .nearest-station-article {
@@ -132,7 +128,10 @@ img {
 }
 
 .random-station-info {
-    margin-bottom: 0;
+    display: flex;
+    margin-bottom: 0.5rem;
+    text-align: left;
+    align-items: center;
 }
 
 .random-station-btn {
@@ -143,6 +142,10 @@ img {
     border: 0;
     background-color: rgb(85, 62, 200);
     color: whitesmoke;
+}
+
+.random-servo-div {
+    margin-left: 0.5rem;
 }
 
 .owners-count-cell {
@@ -229,6 +232,29 @@ table {
     background-color: rgb(85, 62, 200);
     color: whitesmoke;
     margin-left: 0.5rem;
+}
+
+.contributor-avatar {
+    width: 2rem;
+    border-radius: 50%;
+}
+
+.github-links {
+    display: flex;
+    margin-bottom: 1rem;
+}
+
+.contributor-info-div {
+    margin-left: 0.5rem;
+}
+
+.about-section h3 {
+    margin-bottom: 0.5rem;
+}
+
+.random-station-info img {
+    max-width: 2rem;
+    max-height: 2rem;
 }
 
 @media (min-width: 90rem) {
