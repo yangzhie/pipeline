@@ -29,6 +29,7 @@ router.get('/api/stations/nearest', (req, res) => {
     console.log(lat, lng, radius);
     Stations.findNearestStations(lat, lng, radius)
         .then(stations => res.json(stations))
-        
+
 })
+
 module.exports = router

@@ -12,7 +12,7 @@ function findAll() {
 function random() {
     const sql =
         `SELECT * FROM stations 
-        TABLESAMPLE SYSTEM (1) 
+        ORDER BY RANDOM()
         LIMIT 1;`
 
     return db.query(sql)
@@ -30,7 +30,7 @@ function findStationsInBound(boundsCoordinates) {
         `SELECT * FROM stations
         WHERE (latitude BETWEEN $1 AND $2)
         AND (longitude BETWEEN $3 AND $4);`
-    
+
     return db.query(sql, [minLat, maxLat, minLng, maxLng])
         .then(result => result.rows)
 }
@@ -38,14 +38,14 @@ function findStationsInBound(boundsCoordinates) {
 function findNearestStations(lat, lng, radius) {
 
     const sql =
-    `SELECT *,
+        `SELECT *,
     (select SQRT(POW(69.1 * (latitude::float - $1::float), 2) + 
         POW(69.1 * (longitude::float - $2::float) * COS(latitude::float / 57.3), 2)
     )) AS Distance
     FROM stations
     ORDER BY Distance
     LIMIT 700;`
-    
+
     return db.query(sql, [lat, lng])
         .then(result => result.rows)
 

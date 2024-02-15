@@ -20,7 +20,7 @@ async function fetchOwnersAndStations() {
     const result1 = await db.query(sql1);
     const result2 = await db.query(sql2);
     const result3 = await db.query(sql3);
-// promise.all?
+    // how to implement promise.all?
     const owners = result1.rows;
     const totalOwners = result2.rows[0];
     const totalStations = result3.rows[0];
@@ -32,8 +32,6 @@ async function fetchOwnersAndStations() {
     };
     return data
 }
-
-// fetchOwnersAndStations();
 
 module.exports = {
     fetchOwnersAndStations
