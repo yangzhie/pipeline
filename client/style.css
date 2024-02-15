@@ -10,6 +10,15 @@ html, body {
     overflow: hidden; /* Prevent scrolling */
 }
 
+body.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+#map.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+}
 
 .wrapper {
     display: grid;
@@ -66,4 +75,9 @@ img {
     background-color: transparent;
     color: #551A8B;
     text-decoration: underline;
+}
+
+img {
+    width: 2rem;
+    height: 2rem;
 }
