@@ -4,10 +4,6 @@ const currentTimeSection = document.querySelector('.current-time-section')
 const statsSection = document.querySelector('.stats-section')
 const spotlightSection = document.querySelector('.spotlight-section')
 
-
-
-
-
 const customMarkers = {
     SevenEleven: '/images/7-eleven-logo.png',
     BP: '/images/bp-logo.png',
@@ -17,7 +13,6 @@ const customMarkers = {
     Ampol: '/images/ampol-logo.png',
     Other: '/images/generic-logo.png',
 }
-
 
 let map;
 
@@ -39,7 +34,7 @@ async function initMap(coordinates) {
     let lng = center.lng();
 
     getWeather(lat, lng);
-    console.log({lat}, {lng});
+    // console.log({lat}, {lng});
 
 
     const userIcon = {
@@ -74,26 +69,90 @@ async function initMap(coordinates) {
 
     const latitudeElem = document.createElement('p')
     const longitudeElem = document.createElement('p')
-    latitudeElem.textContent = lat
-    longitudeElem.textContent = lng
+    latitudeElem.textContent = `Latitude: ${lat}`
+    longitudeElem.textContent = `Longitude: ${lng}`
     mapCentreLocationSection.appendChild(latitudeElem)
     mapCentreLocationSection.appendChild(longitudeElem)
 
+    showCentreAddress(lat, lng)
+
+    return stationMarker();
+}
+
+const mapCentreAddressSection = document.querySelector('.map-centre-address-section')
+
+function showCentreAddress(lat, lng) {
     const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyBnshLusOeJGaS1zRnSGDZzibrjBrt6bDc`
+    mapCentreAddressSection.innerHTML =''
 
     fetch(url)
         .then(res => res.json())
         .then(data => {
             const currentAddress = data.results[0].formatted_address
-            const addressElem = document.createElement('h2')
+            const addressElem = document.createElement('h4')
             addressElem.textContent = currentAddress
-            mapCentreLocationSection.appendChild(addressElem)
+            mapCentreAddressSection.appendChild(addressElem)
+            mapCentreLocationSection.appendChild(mapCentreAddressSection)
         })
     findNearestStations(lat, lng, 5000)
 }
 
+function stationMarker() {
+    const url = 'http://localhost:8080/api/stations/all'
+
+    fetch(url)
+        .then(res => res.json())
+        .then(stations => {
+            for (let i = 0; i < stations.length; i++) {
+                let latitude = stations[i].latitude;
+                let longitude = stations[i].longitude;
+                let name = stations[i].name
+                let address = stations[i].address
+
+                const contentString =
+                    `<div id="content"><p><strong>${name}</strong></p><p>${address}</p></div>`
+                const icon = {
+                    url: assignCustomMarker(stations[i]),
+                    scaledSize: new google.maps.Size(30, 30)
+                }
+
+                let infoWindow = new google.maps.InfoWindow({
+                    content: contentString,
+                    ariaLabel: name,
+                });
+
+                const marker = new google.maps.Marker({
+                    position: { lat: latitude, lng: longitude },
+                    map,
+                    icon: icon,
+                    draggable: true,
+                    animation: google.maps.Animation.DROP,
+                    title: `${name}\n${address}`
+                })
+
+                // DEAL WITH TOGGLEBOUNCE LATER
+
+                marker.addListener("click", () => {
+                    // toggleBounce(marker)
+                    infoWindow.open({
+                        anchor: marker,
+                        map,
+                    });
+
+                });
+
+                map.addListener('click', () => {
+                    if (infoWindow) infoWindow.close();
+                });
+
+                window.initMap = initMap;
+            }
+        })
+}
+
+
 function getWeather(lat, lng) {
-    const url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lng}&exclude=&units=metric&appid=347533d0e42725230e0bb151a7cb2eea`
+    const url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lng}&exclude=&units=metric&appid=3ce6928b55a1caf2d1a519d7abcd4e76`
     fetch(url)
         .then(openweatherRes => openweatherRes.json())
         .then(result => {
@@ -231,8 +290,8 @@ function getStats() {
             let totalStations = data.totalStations.total_stations
             const totalOwnersElem = document.createElement('h3')
             const totalStationsElem = document.createElement('h3')
-            totalOwnersElem.textContent = `total owners: ${totalOwners}`
-            totalStationsElem.textContent = `total stations: ${totalStations}`
+            totalOwnersElem.textContent = `Total owners: ${totalOwners}`
+            totalStationsElem.textContent = `Total stations: ${totalStations}`
             statsSection.appendChild(totalOwnersElem)
             statsSection.appendChild(totalStationsElem)
             const statsInfoTableElem = document.createElement('table')
@@ -276,10 +335,9 @@ function toggleSidebars() {
 
 }
 
-
 function handleMapBounds() {
     let bounds = map.getBounds()
-    console.log(bounds);
+    // console.log(bounds);
     let boundsCoordinates = {
         maxLat: bounds.getNorthEast().lat(),
         maxLng: bounds.getNorthEast().lng(),
