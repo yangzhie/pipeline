@@ -70,28 +70,28 @@ async function initMap(coordinates) {
         animation: google.maps.Animation.DROP,
     })
 
-    map.addListener('dragend', () => {
-        const newCenter = map.getCenter()
-        const lat = newCenter.lat()
-        const lng = newCenter.lng()
+    // map.addListener('dragend', () => {
+    //     const newCenter = map.getCenter()
+    //     const lat = newCenter.lat()
+    //     const lng = newCenter.lng()
 
-        latitudeElem.textContent = `Latitude: ${lat}`
-        longitudeElem.textContent = `Longitude: ${lng}`
+    //     latitudeElem.textContent = `Latitude: ${lat}`
+    //     longitudeElem.textContent = `Longitude: ${lng}`
 
-        if (userMarker) {
-            userMarker.setMap(null);
-        }
+    //     if (userMarker) {
+    //         userMarker.setMap(null);
+    //     }
 
-        userMarker = new google.maps.Marker({
-            position: { lat: lat, lng: lng },
-            map,
-            icon: userIcon,
-            draggable: true,
-            animation: google.maps.Animation.DROP,
-        });
+    //     userMarker = new google.maps.Marker({
+    //         position: { lat: lat, lng: lng },
+    //         map,
+    //         icon: userIcon,
+    //         draggable: true,
+    //         animation: google.maps.Animation.DROP,
+    //     });
 
-        showCentreAddress(lat, lng)
-    })
+    //     showCentreAddress(lat, lng)
+    // })
 
     const latitudeElem = document.createElement('p')
     const longitudeElem = document.createElement('p')
@@ -291,6 +291,7 @@ function getStats() {
                 const tablerowElem = document.createElement('tr')
                 const tabledata1Elem = document.createElement('td')
                 const tabledata2Elem = document.createElement('td')
+                tabledata2Elem.classList.add('owners-count-cell')
                 tabledata1Elem.textContent = arrOfOwners[i].owner
                 tabledata2Elem.textContent = arrOfOwners[i].total
                 tablerowElem.appendChild(tabledata1Elem)
@@ -321,7 +322,6 @@ function toggleSidebars() {
 
 function handleMapBounds() {
     let bounds = map.getBounds()
-    // console.log(bounds);
     let boundsCoordinates = {
         maxLat: bounds.getNorthEast().lat(),
         maxLng: bounds.getNorthEast().lng(),
@@ -401,21 +401,26 @@ function findNearestStations(lat, lng, radius) {
             for (let i = 0; i < 10; i++) {
                 let stationName = stations[i].name
                 let stationAddress = stations[i].address
-                let stationOwner = stations[i].owner
+                let distance = (stations[i].distance * 1.61).toFixed(2)
 
                 let stationArticle = document.createElement('article')
+                stationArticle.classList.add('nearest-station-article')
                 let descriptionElem = document.createElement('div')
                 let stationNameElem = document.createElement('p')
                 stationNameElem.textContent = stationName
+                stationNameElem.classList.add('owner-p')
 
                 let stationAddressElem = document.createElement('p')
                 stationAddressElem.textContent = stationAddress
 
+                let distanceElem = document.createElement('span')
+                distanceElem.classList.add('distance-span')
+                distanceElem.textContent = `${distance}km`
                 let stationOwnerElem = document.createElement('img') // logo
                 stationOwnerElem.classList.add('marker')
                 stationOwnerElem.src = assignCustomMarker(stations[i])
 
-
+                stationNameElem.appendChild(distanceElem)
                 stationArticle.appendChild(stationOwnerElem)
                 descriptionElem.appendChild(stationNameElem)
                 descriptionElem.appendChild(stationAddressElem)

@@ -1,5 +1,5 @@
 * {
-    border: 1px solid red;
+    /* border: 1px solid red; */
     padding: 0;
     margin: 0;
     box-sizing: border-box;
@@ -20,11 +20,31 @@ body.dark-mode {
 #map.dark-mode {
     background-color: #121212;
     color: #ffffff;
+    overflow: hidden; /* Prevent scrolling */
+    background-image: url('/noise.svg');
+    background-color: rgb(238, 238, 238);
+}
+
+aside {
+    padding: 1rem 2rem 0 2rem;
+    /* font-family: "Montserrat", sans-serif; */
+    font-family: "Roboto Condensed", sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+section {
+    margin-bottom: 1rem;
 }
 
 .wrapper {
     display: grid;
     grid-template-columns: 1fr 3fr 1fr;
+}
+
+.spotlight-section, .stats-section, .current-time-section, .map-centre-location-section {
+    border-bottom: 1px dotted gray;
 }
 
 .wrapper-full {
@@ -35,14 +55,16 @@ body.dark-mode {
     height: 10rem;
 }
 
-
-/* .aside-left section { */
-/* height: 300px;
+.nearest-station-article {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px dotted gray;
+    padding: 0.5rem 0;
 }
 
-.aside-right section {
-    height: 200px;
-} */
+.nearest-station-article:last-child {
+    border-bottom: none;
+}
 
 .hide-sidebars .aside-left,
 .hide-sidebars .aside-right {
@@ -72,9 +94,114 @@ img {
     justify-content: space-between;
 }
 
+.random-station-info {
+    margin-bottom: 0;
+}
+
 .random-station-btn {
-    border: none;
-    background-color: transparent;
-    color: #551A8B;
-    text-decoration: underline;
+    font-size: 12px;
+    height: 1.5rem;
+    padding: 0 10px;
+    border-radius: 10px;
+    border: 0;
+    background-color: rgb(85, 62, 200);
+    color: whitesmoke;
+}
+
+.owners-count-cell {
+    text-align: right;
+    padding-left: 2rem;
+}
+
+.nearest-title {
+    margin-bottom: 0.5rem;
+}
+
+.nearest-station-article img {
+    margin-right: 0.5rem;
+    max-width: 1.5rem;
+    max-height: 1.5rem;
+}
+
+.owner-p {
+    margin-bottom: 0.1rem;
+}
+
+.title-div {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+
+
+/* // <uniquifier>: Use a uniquifier for the class name
+// <weight>: Use a value from 100 to 900 */
+
+/* .montserrat-<uniquifier> {
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+} */
+h2 {
+    color: rgb(61, 61, 61);
+    font-weight: 500;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+h3 {
+    color: rgb(61, 61, 61);
+    font-weight: 400;
+}
+
+h4 {
+    color: rgb(61, 61, 61);
+    font-weight: 400;
+}
+
+.stats-section h1, .stats-section h3{
+    margin-bottom: .5rem;
+}
+
+.map-centre-location-section p {
+    margin-bottom: .1rem;
+}
+
+.map-centre-location-section h4 {
+    margin-top: 1rem;
+}
+
+td, p {
+    font-weight: 300;
+    font-size: .9rem;
+}
+
+table {
+    margin-left: 1rem;
+    margin-bottom: 1rem;
+}
+
+.distance-span {
+    font-size: 12px;
+    height: 2rem;
+    padding: 2px 5px;
+    border-radius: 10px;
+    border: 0;
+    background-color: rgb(85, 62, 200);
+    color: whitesmoke;
+    margin-left: 0.5rem;
+}
+
+@media (min-width: 90rem) {
+    aside {
+        padding: 1rem 1rem 1rem 1rem;
+    }
+
+    section {
+        margin-bottom: 0.5rem;
+    }
+
+
 }
