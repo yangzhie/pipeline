@@ -25,10 +25,21 @@ A single page application using REST JSON API to call petrol stations and thier 
 
 - Using geo-location the map shows the user location and displays a marker. 
 
+- Icon markers are used to show the top petrol station owners - BP, Shell, United, Clatex. All other stations are marked with a generic petrol station icon. 
+
+- When users click markers they show info windows with the station name and address.
+
+- Users can hide the sidebars pressing ctrl + shift + 'b' to display the map to fill the whole screen. 
+
+- Users can scroll and move the map. The latitude and longitude is tracked as it is moved and centers on page.
+
+- A stats table shows the total number of stations for each owner. 
+
+- Spotlight feature highlights random petrol stations and takes the user to its location. 
 
 
 ## :rocket: Technologies used
 
-JavaScript, Node.js, Postgres, APIs, EJS, CSS.
+JavaScript, Node.js, PostgreSQL, Google map API, EJS, CSS. 
 
 
