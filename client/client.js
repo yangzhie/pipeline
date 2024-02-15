@@ -42,7 +42,7 @@ async function initMap(coordinates) {
         scaledSize: new google.maps.Size(40, 40)
     }
 
-    const userMarker = new google.maps.Marker({
+    let userMarker = new google.maps.Marker({
         position: { lat: lat, lng: lng },
         map,
         icon: userIcon,
@@ -50,6 +50,28 @@ async function initMap(coordinates) {
         animation: google.maps.Animation.DROP,
     })
 
+    map.addListener('dragend', () => {
+        const newCenter = map.getCenter()
+        const lat = newCenter.lat()
+        const lng = newCenter.lng()
+
+        latitudeElem.textContent = `Latitude: ${lat}`
+        longitudeElem.textContent = `Longitude: ${lng}`
+
+        if (userMarker) {
+            userMarker.setMap(null); // Remove the marker from the map
+        }
+
+        userMarker = new google.maps.Marker({
+            position: { lat: lat, lng: lng },
+            map,
+            icon: userIcon,
+            draggable: true,
+            animation: google.maps.Animation.DROP,
+        });
+
+        showCentreAddress(lat, lng)
+    })
 
     // TO DISCUSS WITH DT
     // const url = `http://localhost:8080/?lat=${lat}&lng=${lng}`
