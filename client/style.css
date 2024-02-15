@@ -5,9 +5,11 @@
     box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
     height: 100%;
-    overflow: hidden; /* Prevent scrolling */
+    overflow: hidden;
+    /* Prevent scrolling */
 }
 
 body.dark-mode {
@@ -35,7 +37,7 @@ body.dark-mode {
 
 
 /* .aside-left section { */
-    /* height: 300px;
+/* height: 300px;
 }
 
 .aside-right section {
@@ -75,9 +77,4 @@ img {
     background-color: transparent;
     color: #551A8B;
     text-decoration: underline;
-}
-
-img {
-    width: 2rem;
-    height: 2rem;
 }

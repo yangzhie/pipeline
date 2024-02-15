@@ -1,8 +1,32 @@
+let map;
+const url = `http://localhost:8080/api/stats`
+
 const nearestSection = document.querySelector('.nearest-section')
 const mapCentreLocationSection = document.querySelector('.map-centre-location-section')
 const currentTimeSection = document.querySelector('.current-time-section')
 const statsSection = document.querySelector('.stats-section')
 const spotlightSection = document.querySelector('.spotlight-section')
+const mapCentreAddressSection = document.querySelector('.map-centre-address-section')
+const randomStationButton = document.querySelector(".random-station-btn")
+const randomStationInfo = document.querySelector(".random-station-info")
+const darkModeToggle = document.getElementById('darkModeToggle')
+
+
+randomStationButton.addEventListener("click", getRandomPetrolStation)
+document.addEventListener('keydown', function (event) {
+    console.log(event.key);
+    if (event.ctrlKey && event.shiftKey && event.key.toUpperCase() === 'B')
+        toggleSidebars()
+})
+
+const body = document.body;
+darkModeToggle.addEventListener('click', () => {
+    body.classList.toggle('dark-mode')
+})
+
+setInterval(() => {
+    showTime()
+}, 1000);
 
 const customMarkers = {
     SevenEleven: '/images/7-eleven-logo.png',
@@ -13,8 +37,6 @@ const customMarkers = {
     Ampol: '/images/ampol-logo.png',
     Other: '/images/generic-logo.png',
 }
-
-let map;
 
 getUserLocation()
 
@@ -34,8 +56,6 @@ async function initMap(coordinates) {
     let lng = center.lng();
 
     getWeather(lat, lng);
-    // console.log({lat}, {lng});
-
 
     const userIcon = {
         url: '/images/person.png',
@@ -59,7 +79,7 @@ async function initMap(coordinates) {
         longitudeElem.textContent = `Longitude: ${lng}`
 
         if (userMarker) {
-            userMarker.setMap(null); // Remove the marker from the map
+            userMarker.setMap(null);
         }
 
         userMarker = new google.maps.Marker({
@@ -73,22 +93,6 @@ async function initMap(coordinates) {
         showCentreAddress(lat, lng)
     })
 
-    // TO DISCUSS WITH DT
-    // const url = `http://localhost:8080/?lat=${lat}&lng=${lng}`
-    // let data = {
-    //     lat: lat,
-    //     lng: lng
-    // } 
-    // fetch(url)
-    //     method: 'post',
-    //     headers: {
-    //         "Content-Type": "application/json"
-    //     },
-    //     body: JSON.stringify(data) // 
-    // })
-    //     .then(res => res.json())
-    //     .then(data => console.log(data))
-
     const latitudeElem = document.createElement('p')
     const longitudeElem = document.createElement('p')
     latitudeElem.textContent = `Latitude: ${lat}`
@@ -101,11 +105,9 @@ async function initMap(coordinates) {
     return stationMarker();
 }
 
-const mapCentreAddressSection = document.querySelector('.map-centre-address-section')
-
 function showCentreAddress(lat, lng) {
     const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyBnshLusOeJGaS1zRnSGDZzibrjBrt6bDc`
-    mapCentreAddressSection.innerHTML =''
+    mapCentreAddressSection.innerHTML = ''
 
     fetch(url)
         .then(res => res.json())
@@ -152,10 +154,7 @@ function stationMarker() {
                     title: `${name}\n${address}`
                 })
 
-                // DEAL WITH TOGGLEBOUNCE LATER
-
                 marker.addListener("click", () => {
-                    // toggleBounce(marker)
                     infoWindow.open({
                         anchor: marker,
                         map,
@@ -172,7 +171,6 @@ function stationMarker() {
         })
 }
 
-
 function getWeather(lat, lng) {
     const url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lng}&exclude=&units=metric&appid=3ce6928b55a1caf2d1a519d7abcd4e76`
     fetch(url)
@@ -187,10 +185,6 @@ function getWeather(lat, lng) {
             currentWeatherSection.appendChild(currentWeatherElem)
 
             let localTime = result.current.dt
-
-            // let hours = new Date(localTime * 1000).getHours()
-            // let minutes = new Date(localTime * 1000).getMinutes()
-            // let seconds = new Date(localTime * 1000).getSeconds()
 
             let date = new Date(localTime * 1000).getDate()
             let month = new Date(localTime * 1000).getMonth() + 1
@@ -224,18 +218,6 @@ function assignCustomMarker(servo) {
     return markerUrl
 }
 
-
-
-// DEAL WITH TOGGLEBOUNCE LATER
-
-// function toggleBounce() {
-//     if (marker.getAnimation() !== null) {
-//         marker.setAnimation(null);
-//     } else {
-//         marker.setAnimation(google.maps.Animation.BOUNCE);
-//     }
-// }
-
 function showTime() {
     currentTimeSection.innerHTML = ''
     let currentTime = moment().format("ddd hh:mm:ss a")
@@ -243,16 +225,6 @@ function showTime() {
     showTimeElem.textContent = currentTime
     currentTimeSection.appendChild(showTimeElem)
 }
-
-setInterval(() => {
-    showTime()
-}, 1000);
-
-// initMap();
-
-const randomStationButton = document.querySelector(".random-station-btn")
-const randomStationInfo = document.querySelector(".random-station-info")
-randomStationButton.addEventListener("click", getRandomPetrolStation)
 
 function getRandomPetrolStation() {
     const url = 'http://localhost:8080/api/stations/random'
@@ -277,8 +249,7 @@ function getRandomPetrolStation() {
             randomStationInfo.appendChild(imageElem)
         })
 }
-
-getRandomPetrolStation();
+getRandomPetrolStation()
 
 function getUserLocation() {
     if (navigator.geolocation) {
@@ -300,8 +271,6 @@ function getUserLocation() {
         handleLocationError(false, infoWindow, map.getCenter());
     }
 }
-
-const url = `http://localhost:8080/api/stats`
 
 function getStats() {
     fetch(url)
@@ -332,16 +301,9 @@ function getStats() {
 
         })
 }
-
 getStats()
+
 let sidebarsVisible = true
-
-document.addEventListener('keydown', function (event) {
-    console.log(event.key);
-    if (event.ctrlKey && event.shiftKey && event.key.toUpperCase() === 'B')
-        toggleSidebars()
-})
-
 function toggleSidebars() {
     const wrapper = document.querySelector('.wrapper')
 
@@ -372,8 +334,7 @@ function handleMapBounds() {
 
 function toQueryString(obj) {
     let paramsArr = Object.entries(obj)
-    .map(params => params.join('='))
-    
+        .map(params => params.join('='))
     return `?${paramsArr.join('&')}`
 }
 
@@ -427,7 +388,7 @@ function getInBoundStations(coordinates) {
 
                 window.initMap = initMap;
             }
-        })  
+        })
 }
 
 function findNearestStations(lat, lng, radius) {
@@ -463,11 +424,3 @@ function findNearestStations(lat, lng, radius) {
             }
         })
 }
-
-
-const darkModeToggle = document.getElementById('darkModeToggle')
-const body = document.body;
-
-darkModeToggle.addEventListener('click', () => {
-    body.classList.toggle('dark-mode')
-})
