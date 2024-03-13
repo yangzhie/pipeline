@@ -56,6 +56,7 @@ async function initMap(coordinates) {
     let lng = center.lng();
 
     getWeather(lat, lng);
+    findNearestStations(lat, lng, 5000)
 
     const userIcon = {
         url: '/images/person.png',
@@ -70,28 +71,28 @@ async function initMap(coordinates) {
         animation: google.maps.Animation.DROP,
     })
 
-    // map.addListener('dragend', () => {
-    //     const newCenter = map.getCenter()
-    //     const lat = newCenter.lat()
-    //     const lng = newCenter.lng()
+    map.addListener('dragend', () => {
+        const newCenter = map.getCenter()
+        const newLat = newCenter.lat()
+        const newLng = newCenter.lng()
 
-    //     latitudeElem.textContent = `Latitude: ${lat}`
-    //     longitudeElem.textContent = `Longitude: ${lng}`
+        latitudeElem.textContent = `Latitude: ${newLat}`
+        longitudeElem.textContent = `Longitude: ${newLng}`
 
-    //     if (userMarker) {
-    //         userMarker.setMap(null);
-    //     }
+        if (userMarker) {
+            userMarker.setMap(null);
+        }
 
-    //     userMarker = new google.maps.Marker({
-    //         position: { lat: lat, lng: lng },
-    //         map,
-    //         icon: userIcon,
-    //         draggable: true,
-    //         animation: google.maps.Animation.DROP,
-    //     });
+        // userMarker = new google.maps.Marker({
+        //     position: { lat: newLat, lng: newLng },
+        //     map,
+        //     icon: userIcon,
+        //     draggable: true,
+        //     animation: google.maps.Animation.DROP,
+        // });
 
-    //     showCentreAddress(lat, lng)
-    // })
+        showCentreAddress(newLat, newLng)
+    })
 
     const latitudeElem = document.createElement('p')
     const longitudeElem = document.createElement('p')
@@ -118,7 +119,6 @@ function showCentreAddress(lat, lng) {
             mapCentreAddressSection.appendChild(addressElem)
             mapCentreLocationSection.appendChild(mapCentreAddressSection)
         })
-    findNearestStations(lat, lng, 5000)
 }
 
 function stationMarker() {
@@ -234,19 +234,22 @@ function getRandomPetrolStation() {
         .then(res => res.json())
         .then(station => {
 
+            const randomServoElem = document.createElement('div')
+            randomServoElem.classList.add('random-servo-div')
             const nameElem = document.createElement('h3')
             const addressElem = document.createElement('p')
 
             nameElem.textContent = station.name
             addressElem.textContent = station.address
 
-            randomStationInfo.appendChild(nameElem)
-            randomStationInfo.appendChild(addressElem)
-
             const imageElem = document.createElement('img')
             imageElem.src = assignCustomMarker(station)
 
+            randomServoElem.appendChild(nameElem)
+            randomServoElem.appendChild(addressElem)
             randomStationInfo.appendChild(imageElem)
+            randomStationInfo.appendChild(randomServoElem)
+
         })
 }
 getRandomPetrolStation()
