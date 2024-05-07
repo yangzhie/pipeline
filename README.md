@@ -2,6 +2,8 @@
 
 A single page application using REST JSON API to call petrol stations and thier locations. This is displayed using the Google Maps API. 
 
+Please allow your location in Google Maps for optimal experience!
+
 ## :computer: [Click here]() to see the app!
 
 ![screenshot]()
