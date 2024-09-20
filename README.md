@@ -19,7 +19,7 @@ Please allow your location in Google Maps for optimal experience!
 
 ## :pencil2: Planning 
 
-![screenshot](/client/images/Screenshot%202024-02-15%20at%2012.33.19%20pm.png)
+![screenshot](/public/pipeline.PNG)
 
 ## :page_facing_up: Features 
 
